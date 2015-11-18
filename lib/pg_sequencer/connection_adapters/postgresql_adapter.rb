@@ -68,8 +68,7 @@ module PgSequencer
         # log_cnt       | 26
         # is_cycled     | f
         # is_called     | t
-        sequence_names = select_all("SELECT c.relname FROM pg_class c WHERE c.relkind = 'S' order by c.relname asc").map { |row| row['relname'] }
-        
+        sequence_names = select_all("SELECT c.relname, n.nspname FROM pg_class c inner join pg_namespace n on c.relnamespace = n.oid WHERE c.relkind = 'S' order by c.relname asc").map { |row| "#{row['nspname']}.#{row['relname']}" }
         all_sequences = []
         
         sequence_names.each do |sequence_name|
